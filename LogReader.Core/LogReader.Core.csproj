@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A6C131A0-5D19-4895-8D72-DD60912FCB58}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LogReader</RootNamespace>
+    <AssemblyName>LogReader.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\RingCache.cs" />
+    <Compile Include="Common\StringReader.cs" />
+    <Compile Include="FilteringRules\FilteringRuleDefinition.cs" />
+    <Compile Include="FilteringRules\FilteringRuleManager.cs" />
+    <Compile Include="FormattingRules\FormattingRuleDefinition.cs" />
+    <Compile Include="FormattingRules\FormattingRuleManager.cs" />
+    <Compile Include="Serialize\BaseRuleSerializer.cs" />
+    <Compile Include="Serialize\FilteringRuleSerializer.cs" />
+    <Compile Include="Serialize\FormattingRuleSerializer.cs" />
+    <Compile Include="LineParsers\CsvParser.cs" />
+    <Compile Include="LineParsers\ILineParser.cs" />
+    <Compile Include="LineParsers\SingleLineParser.cs" />
+    <Compile Include="LogContext.cs" />
+    <Compile Include="LogProviders\FilterLogProvider.cs" />
+    <Compile Include="LogProviders\ILogProvider.cs" />
+    <Compile Include="LogProviders\LogFile.cs" />
+    <Compile Include="LogProviders\LogFileCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\Searcher.cs" />
+    <Compile Include="Search\SearchFilter.cs" />
+    <Compile Include="Search\SearchPosition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LogReader.Model\LogReader.Model.csproj">
+      <Project>{cf7fdbd0-9de5-42f7-b407-bee842fda56d}</Project>
+      <Name>LogReader.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
