@@ -1,5 +1,7 @@
 using System;
+using System.Drawing;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -9,8 +11,6 @@ namespace LogReaderWPF
 {
     public class ConfigToDynamicGridViewConverter : IValueConverter
     {
-        Brush b = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ff0000"));
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var config = value as LogContext;
@@ -20,12 +20,32 @@ namespace LogReaderWPF
                 grdiView.Columns.Add(new GridViewColumn {Header = "Id", DisplayMemberBinding = new Binding("Id")});
                 for (int column = 0; column < config.Parser.ColumnCount; column++)
                 {
-                    var binding = new Binding("["+column+"]");
-                    grdiView.Columns.Add(new GridViewColumn { Header = "Column"+column, DisplayMemberBinding = binding});
+                    var gridViewColumn = new GridViewColumn {Header = "Column" + column};
+
+                    gridViewColumn.CellTemplate = GetDataTemplate(column.ToString());
+
+                    grdiView.Columns.Add(gridViewColumn);
+
                 }
                 return grdiView;
             }
             return Binding.DoNothing;
+        }
+
+        private static DataTemplate GetDataTemplate(string columnName)
+        {
+            DataTemplate cell = new DataTemplate(); // create a datatemplate
+            FrameworkElementFactory factory = new FrameworkElementFactory(typeof(TextBox));
+            Binding binding = new Binding("[" + columnName + "]");
+            binding.Mode = BindingMode.OneWay;
+            factory.SetBinding(TextBox.TextProperty, binding);
+            factory.SetValue(TextBox.IsReadOnlyProperty, true);
+            factory.SetValue(TextBox.BorderBrushProperty, new SolidColorBrush() {Opacity = 1});
+            factory.SetValue(TextBox.BackgroundProperty, new SolidColorBrush() { Opacity = 1 });
+            factory.SetValue(TextBox.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+            cell.VisualTree = factory;
+
+            return cell;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

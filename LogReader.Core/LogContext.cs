@@ -23,34 +23,19 @@ namespace LogReader
             _logProvider = new FilterLogProvider(new LogFileCache(new LogFile(fileName)), _filteringRuleManager);
         }
 
-        public ILineParser Parser
-        {
-            get { return _parser; }
-        }
+        public ILineParser Parser => _parser;
 
-        public ILogProvider LogProvider
-        {
-            get { return _logProvider; }
-        }
+        public ILogProvider LogProvider => _logProvider;
 
-        public FormattingRuleManager FormattingRuleManager
-        {
-            get { return _formattingRuleManager; }
-        }
+        public FormattingRuleManager FormattingRuleManager => _formattingRuleManager;
 
-        public FilteringRuleManager FilteringRuleManager
-        {
-            get { return _filteringRuleManager; }
-        }
+        public FilteringRuleManager FilteringRuleManager => _filteringRuleManager;
+
+        public Searcher Searcher => _searcher;
 
         public void SetParser(ILineParser parser)
         {
             _parser = parser;
-        }
-
-        public Searcher Searcher
-        {
-            get { return _searcher; }
         }
 
         public void Dispose()

@@ -2,4 +2,16 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/LogReader/.vs/LogReader/v14
+/LogReader/.vs
+/LogReader/bin
+/LogReader/obj
+/LogReader.Core/bin
+/LogReader.Core/obj
+/LogReader.Model/bin
+/LogReader.Model/obj
+/LogReader.Tests/bin
+/LogReader.Tests/obj
+/LogReaderWPF/bin
+/LogReaderWPF/obj
+/packages
+/.vs/LogReader/v14
