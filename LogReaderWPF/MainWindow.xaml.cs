@@ -230,7 +230,11 @@ namespace LogReaderWPF
 
         private void CommandClose_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            CloseFile();
+            var logTabData = (e.OriginalSource as FrameworkElement)?.DataContext as LogTabData;
+            if (logTabData == null)
+                CloseFile();
+            else
+                CloseFile(logTabData);
         }
 
         private void Search_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -306,6 +310,28 @@ namespace LogReaderWPF
         private void Exit_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Close();
+        }
+
+        private void ListView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateColumnsWidth(sender as ListView);
+        }
+
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateColumnsWidth(sender as ListView);
+        }
+
+        private void UpdateColumnsWidth(ListView listView)
+        {
+            int autoFillColumnIndex = (listView.View as GridView).Columns.Count - 1;
+            if (listView.ActualWidth == Double.NaN)
+                listView.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            double remainingSpace = listView.ActualWidth - 2*SystemParameters.VerticalScrollBarWidth;
+            for (int i = 0; i < (listView.View as GridView).Columns.Count; i++)
+                if (i != autoFillColumnIndex)
+                    remainingSpace -= (listView.View as GridView).Columns[i].ActualWidth;
+            (listView.View as GridView).Columns[autoFillColumnIndex].Width = remainingSpace >= 0 ? remainingSpace : 0;
         }
     }
 }

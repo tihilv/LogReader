@@ -11,6 +11,17 @@
         <logReaderWpf:ConfigToDynamicGridViewConverter x:Key="ConfigToDynamicGridViewConverter" />
 
         <Style x:Key="myItemStyle" TargetType="{x:Type ListViewItem}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <Binding Path="Background"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
+
             <Setter Property="Background">
                 <Setter.Value>
                     <Binding Path="Background"/>
@@ -124,12 +135,21 @@
             <TabControl x:Name="logTabControl" ItemsSource="{Binding}" DockPanel.Dock="Top">
                 <TabControl.ItemTemplate>
                     <DataTemplate DataType="logReaderWpf:LogTabData">
-                        <TextBlock Text="{Binding Header}"/>
-                    </DataTemplate>
+                    <Border>
+                        <Grid>
+                            <Grid.InputBindings>
+                                <MouseBinding Command="ApplicationCommands.Close" Gesture="MiddleClick" />
+                            </Grid.InputBindings>
+                            <TextBlock Text="{Binding Header}"/>
+                        </Grid>
+                    </Border>
+
+
+                </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>
                     <DataTemplate DataType="logReaderWpf:LogTabData">
-                    <ListView ItemsSource="{Binding Data}" View="{Binding Context, Converter={StaticResource ConfigToDynamicGridViewConverter}}" ItemContainerStyle="{StaticResource myItemStyle}"
+                    <ListView ItemsSource="{Binding Data}" View="{Binding Context, Converter={StaticResource ConfigToDynamicGridViewConverter}}" ItemContainerStyle="{StaticResource myItemStyle}" SizeChanged="ListView_SizeChanged" Loaded="ListView_Loaded"
                               logReaderWpf:ListBoxBehavior.ScrollOnNewItem="true" SelectionChanged="logListView_SelectionChanged">
                     </ListView>
                     </DataTemplate>

@@ -18,6 +18,7 @@ namespace LogReaderWPF
             {
                 var grdiView = new GridView();
                 grdiView.Columns.Add(new GridViewColumn {Header = "Id", DisplayMemberBinding = new Binding("Id")});
+
                 for (int column = 0; column < config.Parser.ColumnCount; column++)
                 {
                     var gridViewColumn = new GridViewColumn {Header = "Column" + column};
@@ -41,8 +42,11 @@ namespace LogReaderWPF
             factory.SetBinding(TextBox.TextProperty, binding);
             factory.SetValue(TextBox.IsReadOnlyProperty, true);
             factory.SetValue(TextBox.BorderBrushProperty, new SolidColorBrush() {Opacity = 1});
-            factory.SetValue(TextBox.BackgroundProperty, new SolidColorBrush() { Opacity = 1 });
             factory.SetValue(TextBox.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+            factory.SetBinding(TextBox.ForegroundProperty, new Binding("Foreground"));
+            factory.SetBinding(TextBox.BackgroundProperty, new Binding("Background"));
+            factory.SetBinding(TextBox.FontFamilyProperty, new Binding("FontFamily"));
+            factory.SetBinding(TextBox.FontSizeProperty, new Binding("FontSize"));
             cell.VisualTree = factory;
 
             return cell;
