@@ -14,7 +14,7 @@ namespace LogReader
 
     public class LogChangedEventArgs : EventArgs
     {
-        
+        public new static readonly LogChangedEventArgs Empty = new LogChangedEventArgs();
     }
 }
 

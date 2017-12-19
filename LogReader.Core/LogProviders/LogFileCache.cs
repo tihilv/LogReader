@@ -32,6 +32,8 @@ namespace LogReader
 
         public void Dispose()
         {
+            _internal.LogAppended -= InternalOnLogAppended;
+            _internal.LogChanged -= InternalOnLogChanged;
             _internal.Dispose();
         }
 

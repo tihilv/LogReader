@@ -42,6 +42,8 @@ namespace LogReader.Search
             long startLine = Math.Min(prev?.Line ??long.MaxValue, _logContext.LogProvider.Count-1);
             int startColumn = prev?.Column ?? _logContext.Parser.ColumnCount-1;
             int? startIndex = (prev?.Start ?? 1) -1;
+            if (startIndex < 0 )      
+                startIndex = 0;
 
             string searchString = searchFilter.String ?? String.Empty;
 

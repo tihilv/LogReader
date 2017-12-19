@@ -26,7 +26,7 @@ namespace LogReader
 
         private void FilteringRuleManagerOnChanged(object sender, EventArgs eventArgs)
         {
-            OnLogChanged(new LogChangedEventArgs());
+            OnLogChanged(LogChangedEventArgs.Empty);
         }
 
         private void InternalOnLogAppended(object sender, LogChangedEventArgs logChangedEventArgs)
@@ -40,7 +40,7 @@ namespace LogReader
 
         private void InternalOnLogChanged(object sender, LogChangedEventArgs logChangedEventArgs)
         {
-                OnLogChanged(logChangedEventArgs);
+            OnLogChanged(logChangedEventArgs);
         }
 
         private void OnLogChanged(LogChangedEventArgs logChangedEventArgs)
@@ -66,6 +66,9 @@ namespace LogReader
         public void Dispose()
         {
             _filteringRuleManager.Changed -= FilteringRuleManagerOnChanged;
+            _internal.LogAppended -= InternalOnLogAppended;
+            _internal.LogChanged -= InternalOnLogChanged;
+
             _internal.Dispose();
         }
 

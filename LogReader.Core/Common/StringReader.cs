@@ -6,6 +6,11 @@ namespace LogReader
 {
     class StringReader: IDisposable
     {
+        const int BufferLength = 1024;
+        private long _read;
+        private long _index;
+        private readonly byte[] _buffer = new byte[BufferLength];
+
         readonly Stream _underlinedStream;
 
         public StringReader(string fileName)
@@ -22,13 +27,6 @@ namespace LogReader
             Position = position;
             _read = 0;
         }
-
-        const int BufferLength = 1024;
-        private long _read;
-        private long _index;
-        private byte[] _buffer = new byte[BufferLength];
-
-
 
         public string ReadLine()
         {
@@ -75,8 +73,6 @@ namespace LogReader
             Position = Math.Min(Position, _underlinedStream.Length);
             return result;
         }
-
-
 
         public void Dispose()
         {

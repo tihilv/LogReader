@@ -58,10 +58,10 @@ namespace LogReader
 
         void FillLines()
         {
-            var lines = _lines.Count;
-
+            bool newLines;
             lock (_lock)
             {
+                int lines = _lines.Count;
                 if (_lines.Any())
                 {
                     _stream.Seek(_lines.Last().Start);
@@ -75,10 +75,11 @@ namespace LogReader
 
                     _lines.Add(new LogLinePosition(start, end));
                 }
+                newLines = _lines.Count != lines;
             }
 
-            if (_lines.Count != lines)
-                    LogAppended?.Invoke(this, new LogChangedEventArgs());
+            if (newLines)
+                LogAppended?.Invoke(this, new LogChangedEventArgs());
         }
 
         public string this[long index]
