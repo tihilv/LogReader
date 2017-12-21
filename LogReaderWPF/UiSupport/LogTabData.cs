@@ -1,57 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Reflection;
 using LogReader;
 using LogReader.Common;
+using LogReader.Options;
 using LogReader.Search;
 
 namespace LogReaderWPF
 {
     class LogTabData : IDisposable
     {
-        internal LogTabData(string fileName)
+        private GeneralOptions _options;
+
+        internal LogTabData(string fileName, GeneralOptions options)
         {
             Header = fileName;
-            Context = new LogContext(fileName);
+            _options = options;
+            FileOptions = options.GetFileOptions(fileName);
+
+            Context = new LogContext(fileName, FileOptions.ParserOptions.CreateParser());
             InitContext();
             Data = new LogItemsList(Context);
-            LineParserOptions = new LineParserOptions();
         }
-
-        readonly string _formattingRuleFileName = Assembly.GetExecutingAssembly().Location + ".format.xml";
-        readonly string _filteringRuleFileName = Assembly.GetExecutingAssembly().Location + ".filter.xml";
 
         private void InitContext()
         {
-            try
-            {
-                ObservableCollection<FormattingRuleDefinition> formattingCollection =
-                    new ObservableCollection<FormattingRuleDefinition>();
-                UiSerializeHelper<FormattingRuleDefinition>.LoadFromFile(formattingCollection, _formattingRuleFileName);
-                Context.FormattingRuleManager.SetDefinitions(formattingCollection);
-            }
-            catch (Exception)
-            {
-
-            }
-
-            try
-            {
-                ObservableCollection<FilteringRuleDefinition> filteringCollection = new ObservableCollection<FilteringRuleDefinition>();
-                UiSerializeHelper<FilteringRuleDefinition>.LoadFromFile(filteringCollection, _filteringRuleFileName);
-                Context.FilteringRuleManager.SetDefinitions(filteringCollection);
-            }
-            catch (Exception)
-            {
-            }
+            _options.PropertyChanged += OnOptionsPropertyChanged;
+            Context.FormattingRuleManager.SetDefinitions(_options.FormattingRuleDefinitions);
+            Context.FilteringRuleManager.SetDefinitions(_options.FilteringRuleDefinitions);
         }
 
-        private void SaveContext()
+        private void OnOptionsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            UiSerializeHelper<FormattingRuleDefinition>.SaveToFile(Context.FormattingRuleManager.Definitions, _formattingRuleFileName);
+            if (e.PropertyName == nameof(_options.FormattingRuleDefinitions))
+                Context.FormattingRuleManager.SetDefinitions(_options.FormattingRuleDefinitions);
 
-            UiSerializeHelper<FilteringRuleDefinition>.SaveToFile(Context.FilteringRuleManager.Definitions, _filteringRuleFileName);
+            else if (e.PropertyName == nameof(_options.FilteringRuleDefinitions))
+                Context.FilteringRuleManager.SetDefinitions(_options.FilteringRuleDefinitions);
         }
 
         public string Header { get; private set; }
@@ -60,39 +44,12 @@ namespace LogReaderWPF
 
         public SearchPosition? LastPosition { get; set; }
 
-        public LineParserOptions LineParserOptions { get; set; }
+        public FileOptions FileOptions { get; set; }
 
         public void Dispose()
         {
-            SaveContext();
+            _options.PropertyChanged -= OnOptionsPropertyChanged;
             Context.Dispose();
-        }
-    }
-
-    public class LineParserOptions
-    {
-        public bool Single { get; set; }
-        public string Separator { get; set; }
-        public byte Columns { get; set; }
-
-        public LineParserOptions()
-        {
-            Single = false;
-            Separator = "|";
-            Columns = 4;
-        }
-
-        public ILineParser CreateParser()
-        {
-            if (Single)
-                return new SingleLineParser();
-
-            return new CsvParser(Separator[0], Columns);
-        }
-
-        public LineParserOptions Clone()
-        {
-            return (LineParserOptions) MemberwiseClone();
         }
     }
 }

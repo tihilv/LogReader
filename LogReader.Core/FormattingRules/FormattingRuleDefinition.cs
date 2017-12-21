@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using LogReader.FormattingRules;
 using Microsoft.CSharp;
 
 namespace LogReader
@@ -80,8 +81,15 @@ namespace LogReader
         {
             if (_compiledRule == null)
             {
-                _compiledRule = ComplieRule();
-                _compiledRule.SetEnvironment(environment);
+                try
+                {
+                    _compiledRule = ComplieRule();
+                    _compiledRule.SetEnvironment(environment);
+                }
+                catch
+                {
+                    _compiledRule = DummyRule.Instance;
+                }
             }
             return _compiledRule;
         }
@@ -150,6 +158,13 @@ namespace LogReader
             var type = assembly.GetType("LogReader." + className);
 
             return (IFormattingRule) Activator.CreateInstance(type);
+        }
+
+        public FormattingRuleDefinition Clone()
+        {
+            var result = (FormattingRuleDefinition)MemberwiseClone();
+            result._compiledRule = null;
+            return result;
         }
     }
 }

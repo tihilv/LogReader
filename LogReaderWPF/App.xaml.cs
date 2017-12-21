@@ -32,7 +32,7 @@ namespace LogReaderWPF
                 OpenFileName = e.Args[0];
         }
 
-        internal void OpenFile(string fileName)
+        private void OpenFile(string fileName)
         {
             MainWindow window = (MainWindow)Current.MainWindow;
             window.OpenFile(fileName);

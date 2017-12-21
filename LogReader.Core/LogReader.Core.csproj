@@ -44,8 +44,13 @@
     <Compile Include="Common\StringReader.cs" />
     <Compile Include="FilteringRules\FilteringRuleDefinition.cs" />
     <Compile Include="FilteringRules\FilteringRuleManager.cs" />
+    <Compile Include="FormattingRules\DummyRule.cs" />
     <Compile Include="FormattingRules\FormattingRuleDefinition.cs" />
     <Compile Include="FormattingRules\FormattingRuleManager.cs" />
+    <Compile Include="Options\FileOptions.cs" />
+    <Compile Include="Options\GeneralOptions.cs" />
+    <Compile Include="Options\LineParserOptions.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Serialize\BaseRuleSerializer.cs" />
     <Compile Include="Serialize\FilteringRuleSerializer.cs" />
     <Compile Include="Serialize\FormattingRuleSerializer.cs" />
@@ -61,6 +66,7 @@
     <Compile Include="Search\Searcher.cs" />
     <Compile Include="Search\SearchFilter.cs" />
     <Compile Include="Search\SearchPosition.cs" />
+    <Compile Include="Serialize\OptionsTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogReader.Model\LogReader.Model.csproj">

@@ -58,10 +58,6 @@
       <Project>{A6C131A0-5D19-4895-8D72-DD60912FCB58}</Project>
       <Name>LogReader.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogReader\LogReader.csproj">
-      <Project>{a00019a2-16a0-4413-94fe-649a2c3e1918}</Project>
-      <Name>LogReader</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -130,5 +130,12 @@ namespace LogReader
 
             return (IFilteringRule)Activator.CreateInstance(type);
         }
+
+        public FilteringRuleDefinition Clone()
+        {
+            var result = (FilteringRuleDefinition) MemberwiseClone();
+            result._compiledRule = null;
+            return result;
+        }
     }
 }

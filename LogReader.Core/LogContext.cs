@@ -1,4 +1,5 @@
 ﻿using System;
+using LogReader.Options;
 using LogReader.Search;
 
 namespace LogReader
@@ -13,13 +14,13 @@ namespace LogReader
 
         private readonly Searcher _searcher;
 
-        public LogContext(string fileName)
+        public LogContext(string fileName, ILineParser parser)
         {
             _formattingRuleManager = new FormattingRuleManager();
             _filteringRuleManager = new FilteringRuleManager();
             _searcher = new Searcher(this);
 
-            _parser = new CsvParser('|', 4);
+            _parser = parser;
             _logProvider = new FilterLogProvider(new LogFileCache(new LogFile(fileName)), _filteringRuleManager);
         }
 

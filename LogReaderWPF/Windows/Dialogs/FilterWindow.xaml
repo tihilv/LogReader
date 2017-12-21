@@ -6,26 +6,63 @@
         xmlns:local="clr-namespace:LogReader"
         xmlns:local1="clr-namespace:LogReader;assembly=LogReader.Core" x:Class="LogReader.FilterWindow"
         mc:Ignorable="d"
-        Title="Filter" Height="300" Width="511.73" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        Title="Filter" Height="350" Width="650" ResizeMode="CanResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" MinWidth="650" MinHeight="350">
     <Grid DataContext="{Binding ElementName=listBox, Path=SelectedItem}">
-        <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="224" Margin="10,10,0,0" VerticalAlignment="Top" Width="153">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Label x:Name="label" Content="Name" HorizontalAlignment="Left" Margin="175,7,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="222,10,0,0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" Width="120"/>
-        <CheckBox x:Name="checkBox" Content="Enabled" HorizontalAlignment="Left" Margin="374,13,0,0" VerticalAlignment="Top" IsChecked="{Binding Enabled}"/>
-        <Label x:Name="label1" Content="Condition:" HorizontalAlignment="Left" Margin="175,46,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="92" Margin="175,72,0,0" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Condition}" VerticalAlignment="Top" Width="319"/>
-        <Button x:Name="button" Content="Add" HorizontalAlignment="Left" Margin="10,239,0,0" VerticalAlignment="Top" Width="75" Click="AddButton_Click"/>
-        <Button x:Name="button1" Content="Delete" HorizontalAlignment="Left" Margin="88,239,0,0" VerticalAlignment="Top" Width="75"  Click="RemoveButton_Click"/>
-        <Button x:Name="button2" Content="Cancel" HorizontalAlignment="Left" Margin="419,239,0,0" VerticalAlignment="Top" Width="75" IsCancel="True"/>
-        <Button x:Name="button3" Content="OK" HorizontalAlignment="Left" Margin="339,239,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="OkButton_Click"/>
-        <Button x:Name="button1_Copy" Content="Save" HorizontalAlignment="Left" Margin="174,239,0,0" VerticalAlignment="Top" Width="75"  Click="SaveButton_Click"/>
-        <Button x:Name="button1_Copy1" Content="Load" HorizontalAlignment="Left" Margin="254,239,0,0" VerticalAlignment="Top" Width="75"  Click="LoadButton_Click"/>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="139*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+
+
+        <DockPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
+            <ListBox x:Name="listBox" Margin="10,10,10,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <WrapPanel Grid.Row="0" HorizontalAlignment="Left" Grid.Column="1">
+            <Label x:Name="label" Content="Name:" HorizontalAlignment="Left" Margin="15,7,0,0" VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Top" Width="120"/>
+            <CheckBox x:Name="checkBox" Content="Enabled" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" IsChecked="{Binding Enabled}"/>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Left" Grid.Column="1">
+            <Label x:Name="label1" Content="Condition:" HorizontalAlignment="Left" Margin="15,7,0,0" VerticalAlignment="Top"/>
+        </WrapPanel>
+
+        <DockPanel Grid.Row="2" Grid.Column="1">
+            <TextBox x:Name="textBox1" Margin="0,0,10,0" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Condition}"/>
+        </DockPanel>
+
+
+        <DockPanel Grid.Row="3" Grid.Column="0" Margin="0,10,0,0">
+            <Button x:Name="button" Content="Add" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="75" Click="AddButton_Click"/>
+            <Button x:Name="button1" Content="Delete" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Width="75"  Click="RemoveButton_Click"/>
+        </DockPanel>
+
+        <DockPanel Grid.Row="3" Grid.Column="1">
+            <WrapPanel Margin="20,10,0,0">
+                <Button x:Name="button1_Copy" Content="Save" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75"  Click="SaveButton_Click"/>
+                <Button x:Name="button1_Copy1" Content="Load" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="75"  Click="LoadButton_Click"/>
+            </WrapPanel>
+
+            <WrapPanel HorizontalAlignment="Right" Margin="10,10,10,0">
+                <Button x:Name="button2" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" IsCancel="True"/>
+                <Button x:Name="button3" Content="OK" HorizontalAlignment="Right" Margin="10,0,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="OkButton_Click"/>
+            </WrapPanel>
+
+        </DockPanel>
 
     </Grid>
 </Window>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace LogReader
@@ -16,13 +15,6 @@ namespace LogReader
         public FormattingRuleManager()
         {
             _definitions = new List<FormattingRuleDefinition>();
-
-            FillDebug();
-        }
-
-        public ReadOnlyCollection<FormattingRuleDefinition> Definitions
-        {
-            get { return _definitions.AsReadOnly(); }
         }
 
         public void SetDefinitions(IEnumerable<FormattingRuleDefinition> definitions)
@@ -31,17 +23,6 @@ namespace LogReader
             _definitions.AddRange(definitions);
 
             Changed?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void FillDebug()
-        {
-            FormattingRuleDefinition t = new FormattingRuleDefinition();
-            t.Name = "WarningRule";
-            t.Condition = "l.Contains(\"Trace\")";
-            t.Action = "BackColor = Color.Red, ForeColor = Color.White, Font = new Font(\"Courier New\", 12)";
-            t.Enabled = true;
-
-            _definitions.Add(t);
         }
 
         public LineFormat? ApplyFormat(LogLine line)

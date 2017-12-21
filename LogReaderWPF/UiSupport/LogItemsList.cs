@@ -21,14 +21,20 @@ namespace LogReader.Common
             _logContext.LogProvider.LogChanged += LogProviderOnLogChanged;
 
             _uiContext = SynchronizationContext.Current;
+            _lastCount = (int)_logContext.LogProvider.Count;
         }
+
+        private int _lastCount = 0;
 
         private void LogProviderOnLogAppended(object sender, LogChangedEventArgs logChangedEventArgs)
         {
             _uiContext.Send(state =>
             {
                 lock (MainWindow._lock)
+                { 
+                    _lastCount = (int)_logContext.LogProvider.Count;
                     CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                }
             }, null);
         }
 
@@ -37,7 +43,10 @@ namespace LogReader.Common
             _uiContext.Send(state =>
             {
                 lock (MainWindow._lock)
+                {
+                    _lastCount = (int)_logContext.LogProvider.Count;
                     CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                }
             }, null);
         }
 
@@ -78,7 +87,7 @@ namespace LogReader.Common
 
         public int IndexOf(object value)
         {
-            return -1;
+            return (int)((ViewItem)value).Id;
         }
 
         public void Insert(int index, object value)
@@ -116,14 +125,7 @@ namespace LogReader.Common
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                var result = (int) _logContext.LogProvider.Count;
-                return result;
-            }
-        }
+        public int Count => _lastCount;
 
         public object SyncRoot => null;
         public bool IsSynchronized => false;

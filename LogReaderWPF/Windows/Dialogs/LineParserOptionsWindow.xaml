@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LogReader"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Columns" Height="300" Width="214.712" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        Title="Columns" Height="311.957" Width="255.473" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
@@ -17,6 +17,7 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="40" />
             <RowDefinition Height="30" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -32,10 +33,12 @@
             <TextBlock MinWidth="80">Columns:</TextBlock>
             <xctk:ByteUpDown MinWidth="50" IsEnabled="{Binding IsChecked, ElementName=csvStyle}" Value="{Binding Columns}"></xctk:ByteUpDown>
         </WrapPanel>
-        <WrapPanel Grid.Row="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1">
+        <WrapPanel Grid.Row="5" HorizontalAlignment="Left" Grid.ColumnSpan="2" Grid.Column="0">
+            <CheckBox IsChecked="{Binding Default, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LineParserOptionsWindow}}}">Set as default</CheckBox>
+        </WrapPanel>
+        <WrapPanel Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1">
             <Button IsDefault="True" MinWidth="60" Margin="0,0,10,0" Click="Button_Click">OK</Button>
             <Button IsCancel="True" MinWidth="60">Cancel</Button>
         </WrapPanel>
-
     </Grid>
 </Window>

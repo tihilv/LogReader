@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,12 +12,15 @@ using Fluent;
 using LogReader;
 using LogReader.Common;
 using LogReader.Search;
+using LogReader.Serialize;
 using Microsoft.Win32;
 
 namespace LogReaderWPF
 {
     public partial class MainWindow
     {
+        private readonly OptionsTracker _optionsTracker;
+
         private readonly ObservableCollection<LogTabData> _tabs;
         internal static readonly object _lock = new object();
 
@@ -23,6 +28,8 @@ namespace LogReaderWPF
         {
             _tabs = new ObservableCollection<LogTabData>();
             DataContext = _tabs;
+            _optionsTracker = new OptionsTracker(Assembly.GetExecutingAssembly().Location + ".options.xml");
+
             InitializeComponent();
             
 
@@ -62,7 +69,7 @@ namespace LogReaderWPF
 
         internal void OpenFile(string fileName)
         {
-            LogTabData tab = new LogTabData(fileName);
+            LogTabData tab = new LogTabData(fileName, _optionsTracker.Options);
             _tabs.Add(tab);
             logTabControl.SelectedIndex = logTabControl.Items.Count - 1;
         }
@@ -85,22 +92,15 @@ namespace LogReaderWPF
             if (logTabControl.SelectedIndex < 0)
                 return;
 
-            LogTabData tab = _tabs[logTabControl.SelectedIndex];
-
             ObservableCollection<FilteringRuleDefinition> definitions = new ObservableCollection<FilteringRuleDefinition>();
-            foreach (FilteringRuleDefinition definition in tab.Context.FilteringRuleManager.Definitions)
-            {
-                FilteringRuleDefinition copy = new FilteringRuleDefinition() { Condition = definition.Condition, Enabled = definition.Enabled, Name = definition.Name, Priority = definition.Priority };
-                definitions.Add(copy);
-            }
+            foreach (FilteringRuleDefinition definition in _optionsTracker.Options.FilteringRuleDefinitions)
+                definitions.Add(definition.Clone());
 
             FilterWindow filterWindow = new FilterWindow();
             filterWindow.Owner = this;
             filterWindow.SetCollection(definitions);
             if (filterWindow.ShowDialog()??false)
-            {
-                tab.Context.FilteringRuleManager.SetDefinitions(definitions);
-            }
+                _optionsTracker.Options.FilteringRuleDefinitions = new List<FilteringRuleDefinition>(definitions);
         }
 
         private void ToggleFilter()
@@ -111,22 +111,15 @@ namespace LogReaderWPF
 
         private void SetFormat()
         {
-            LogTabData tab = _tabs[logTabControl.SelectedIndex];
-
             ObservableCollection<FormattingRuleDefinition> definitions = new ObservableCollection<FormattingRuleDefinition>();
-            foreach (FormattingRuleDefinition definition in tab.Context.FormattingRuleManager.Definitions)
-            {
-                FormattingRuleDefinition copy = new FormattingRuleDefinition() { Action = definition.Action, Condition = definition.Condition, Enabled = definition.Enabled, Name = definition.Name, Priority = definition.Priority };
-                definitions.Add(copy);
-            }
+            foreach (FormattingRuleDefinition definition in _optionsTracker.Options.FormattingRuleDefinitions)
+                definitions.Add(definition.Clone());
 
             FormatWindow filterWindow = new FormatWindow();
             filterWindow.Owner = this;
             filterWindow.SetCollection(definitions);
             if (filterWindow.ShowDialog() ?? false)
-            {
-                tab.Context.FormattingRuleManager.SetDefinitions(definitions);
-            }
+                _optionsTracker.Options.FormattingRuleDefinitions = new List<FormattingRuleDefinition>(definitions);
         }
 
         private bool _isInSearch;
@@ -180,19 +173,15 @@ namespace LogReaderWPF
 
         private void SetFilterForSearch()
         {
-            LogTabData tab = _tabs[logTabControl.SelectedIndex];
-            LogContext context = tab.Context;
-
             string culture = (caseSensitive.IsChecked == true)
                 ? "StringComparison.InvariantCulture"
                 : "StringComparison.InvariantCultureIgnoreCase";
 
             var condition = "l.IndexOf(\"" + searchBox.Text.Replace("\"", "\\\"") + "\", " + culture + ") >= 0";
             var filterRule = new FilteringRuleDefinition() {Condition = condition, Enabled = true, Name = searchBox.Text, Priority = 0};
-            var collection = context.FilteringRuleManager.Definitions.ToList();
-
+            var collection = _optionsTracker.Options.FilteringRuleDefinitions;
             collection.Add(filterRule);
-            context.FilteringRuleManager.SetDefinitions(collection);
+            _optionsTracker.Options.FilteringRuleDefinitions = new List<FilteringRuleDefinition>(collection);
 
             if (toggleFilterButton.IsChecked != true)
             {
@@ -206,14 +195,17 @@ namespace LogReaderWPF
 
             LineParserOptionsWindow filterWindow = new LineParserOptionsWindow();
             filterWindow.Owner = this;
-            filterWindow.DataContext = tab.LineParserOptions.Clone();
+            filterWindow.DataContext = tab.FileOptions.ParserOptions.Clone();
             if (filterWindow.ShowDialog() ?? false)
             {
                 tab.Context.SetParser(filterWindow.Options.CreateParser());
+                tab.FileOptions.ParserOptions = filterWindow.Options;
                 var index = logTabControl.SelectedIndex;
                 DataContext = null;
                 DataContext = _tabs;
                 logTabControl.SelectedIndex = index;
+                if (filterWindow.Default)
+                    _optionsTracker.Options.DefaultParserOptions = filterWindow.Options;
             }
         }
 

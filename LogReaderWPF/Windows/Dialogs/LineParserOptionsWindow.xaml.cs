@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using LogReaderWPF;
+using LogReader.Options;
 
 namespace LogReader
 {
@@ -22,5 +22,7 @@ namespace LogReader
         {
             DialogResult = true;
         }
+
+        public bool Default { get; set; }
     }
 }

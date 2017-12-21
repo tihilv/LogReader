@@ -5,12 +5,14 @@ namespace LogReader
 {
     public class CsvParser : ILineParser
     {
-        readonly char _separator;
+        readonly string[] _separators;
         private readonly byte _columnCount;
 
-        public CsvParser(char separator, byte columnCount)
+        public CsvParser(string separator, byte columnCount)
         {
-            _separator = separator;
+            if (string.IsNullOrEmpty(separator))
+                separator = " ";
+            _separators = new [] {separator};
             _columnCount = columnCount;
         }
 
@@ -18,11 +20,11 @@ namespace LogReader
 
         public LogLine Parse(long index, string line)
         {
-            var splitted = line?.Split(_separator)??new string[0];
+            var splitted = line?.Split(_separators, StringSplitOptions.None) ??new string[0];
 
             if (splitted.Length > _columnCount)
             {
-                splitted[_columnCount - 1] = String.Join(_separator.ToString(), splitted.Skip(_columnCount - 1));
+                splitted[_columnCount - 1] = String.Join(_separators[0], splitted.Skip(_columnCount - 1));
             }
             if (splitted.Length < _columnCount)
             {

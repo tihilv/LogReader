@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace LogReader
@@ -17,11 +16,6 @@ namespace LogReader
         public FilteringRuleManager()
         {
             _definitions = new List<FilteringRuleDefinition>();
-        }
-
-        public ReadOnlyCollection<FilteringRuleDefinition> Definitions
-        {
-            get { return _definitions.AsReadOnly(); }
         }
 
         public bool Enabled
