@@ -6,7 +6,7 @@ namespace LogReader
 {
     class StringReader: IDisposable
     {
-        const int BufferLength = 1024;
+        const int BufferLength = 102400;
         private long _read;
         private long _index;
         private readonly byte[] _buffer = new byte[BufferLength];
@@ -28,12 +28,14 @@ namespace LogReader
             _read = 0;
         }
 
-        public string ReadLine()
+        public string ReadLine(bool onlySeek)
         {
             bool found = false;
 
             int additionalSymbols = 0;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = onlySeek ? null : new StringBuilder();
+            int readSymbolCount = 0;
+
             while (!found)
             {
                 if (_read <= 0)
@@ -43,7 +45,9 @@ namespace LogReader
                     _read = _underlinedStream.Read(_buffer, 0, BufferLength);
                     if (_read == 0)
                     {
-                        if (sb.Length > 0) break;
+                        if (readSymbolCount > 0) 
+                            break;
+                        
                         return null;
                     }
                 }
@@ -64,12 +68,16 @@ namespace LogReader
                         additionalSymbols++;
                         continue;
                     }
-                    else sb.Append(ch);
+                    else
+                    {
+                        sb?.Append(ch);
+                        readSymbolCount++;
+                    }
                 }
             }
 
-            var result = sb.ToString();
-            Position += result.Length+additionalSymbols;
+            var result = sb?.ToString();
+            Position += readSymbolCount+additionalSymbols;
             Position = Math.Min(Position, _underlinedStream.Length);
             return result;
         }

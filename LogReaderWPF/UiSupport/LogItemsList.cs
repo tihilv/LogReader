@@ -171,7 +171,7 @@ namespace LogReader.Common
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 
-    public struct ViewItem
+    public struct ViewItem : IEquatable<ViewItem>
     {
         public long Id { get; private set; }
         public LogLine Value { get; private set; }
@@ -186,13 +186,48 @@ namespace LogReader.Common
             Value = value;
             Foreground = foreground;
             Background = background;
-                FontFamily = (font?.FontFamily??(System.Drawing.FontFamily.GenericMonospace)).Name;
-                FontSize = font?.Size??12;
+            FontFamily = (font?.FontFamily ?? (System.Drawing.FontFamily.GenericMonospace)).Name;
+            FontSize = font?.Size ?? 12;
         }
 
         public string this[int index]
         {
             get { return Value.ParsedString[index]; }
+        }
+
+        public bool Equals(ViewItem other)
+        {
+            return Id == other.Id && Value.Equals(other.Value) && string.Equals(Foreground, other.Foreground) && string.Equals(Background, other.Background) && string.Equals(FontFamily, other.FontFamily) && FontSize.Equals(other.FontSize);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ViewItem && Equals((ViewItem) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Id.GetHashCode();
+                hashCode = (hashCode * 397) ^ Value.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Foreground != null ? Foreground.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Background != null ? Background.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (FontFamily != null ? FontFamily.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ FontSize.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(ViewItem left, ViewItem right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ViewItem left, ViewItem right)
+        {
+            return !left.Equals(right);
         }
     }
 }

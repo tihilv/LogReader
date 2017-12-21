@@ -8,7 +8,7 @@ namespace LogReader
         private readonly RingCache<String> _cache;
         private readonly object _lock = new object();
 
-        public LogFileCache(ILogProvider @internal, int cachedItems = 100000)
+        public LogFileCache(ILogProvider @internal, int cachedItems = 10000)
         {
             _internal = @internal;
             _internal.LogChanged += InternalOnLogChanged;

@@ -9,7 +9,7 @@ namespace LogReader
     public class LogFile: ILogProvider
     {
         private readonly string _fileName;
-        private readonly List<LogLinePosition> _lines;
+        private readonly List<long> _lineStarts;
 
         private readonly FileSystemWatcher _watcher;
 
@@ -22,7 +22,7 @@ namespace LogReader
         public LogFile(string fileName)
         {
             _fileName = fileName;
-            _lines = new List<LogLinePosition>();
+            _lineStarts = new List<long>();
 
             _stream = new StringReader(_fileName);
 
@@ -40,7 +40,7 @@ namespace LogReader
             _timer.AutoReset = true;
             _timer.Interval = 1000;
             _timer.Elapsed += (sender, args) => FillLines();
-            _timer.Start();
+            //_timer.Start();
         }
 
         public long Count
@@ -49,7 +49,7 @@ namespace LogReader
             {
                 lock (_lock)
                 {
-                    return _lines.Count;
+                    return _lineStarts.Count;
                 }
 
             }
@@ -61,21 +61,21 @@ namespace LogReader
             bool newLines;
             lock (_lock)
             {
-                int lines = _lines.Count;
-                if (_lines.Any())
+                int lines = _lineStarts.Count;
+                if (_lineStarts.Any())
                 {
-                    _stream.Seek(_lines.Last().Start);
-                    _stream.ReadLine();
+                    _stream.Seek(_lineStarts.Last());
+                    _stream.ReadLine(true);
                 }
                 while (!_stream.EndOfStream)
                 {
                     long start = _stream.Position;
-                    _stream.ReadLine();
+                    _stream.ReadLine(true);
                     long end = _stream.Position;
 
-                    _lines.Add(new LogLinePosition(start, end));
+                    _lineStarts.Add(start);
                 }
-                newLines = _lines.Count != lines;
+                newLines = _lineStarts.Count != lines;
             }
 
             if (newLines)
@@ -86,8 +86,8 @@ namespace LogReader
         {
             get
             {
-                _stream.Seek(_lines[(int) index].Start);
-                return _stream.ReadLine();
+                _stream.Seek(_lineStarts[(int) index]);
+                return _stream.ReadLine(false);
             }
         }
 
@@ -99,18 +99,6 @@ namespace LogReader
             _timer.Stop();
             _watcher.Dispose();
             _stream.Dispose();
-        }
-    }
-
-    public struct LogLinePosition
-    {
-        public readonly long Start;
-        public readonly long End;
-
-        public LogLinePosition(long start, long end)
-        {
-            Start = start;
-            End = end;
         }
     }
 }

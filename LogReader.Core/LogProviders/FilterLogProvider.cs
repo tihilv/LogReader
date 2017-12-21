@@ -57,7 +57,7 @@ namespace LogReader
         void Filter()
         {
             for (long i = _lastCheckedIndex; i < _internal.Count; i++)
-                if (_filteringRuleManager.FilterLine(_internal[i]))
+                if (!_filteringRuleManager.CanFilterBeApplied() || _filteringRuleManager.FilterLine(_internal[i]))
                     _mapping.Add(i);
 
             _lastCheckedIndex = _internal.Count;

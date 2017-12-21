@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -212,12 +211,6 @@ namespace LogReaderWPF
         private void CommandOpen_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             OpenFile();
-            IDisposable c = null;
-            using (c)
-            {
-                c = null;
-            }
-
         }
 
         private void CommandClose_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -316,14 +309,17 @@ namespace LogReaderWPF
 
         private void UpdateColumnsWidth(ListView listView)
         {
-            int autoFillColumnIndex = (listView.View as GridView).Columns.Count - 1;
-            if (listView.ActualWidth == Double.NaN)
+            var columns = ((GridView) listView.View).Columns;
+            int autoFillColumnIndex = columns.Count - 1;
+            
+            if (Double.IsNaN(listView.ActualWidth))
                 listView.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-            double remainingSpace = listView.ActualWidth - 2*SystemParameters.VerticalScrollBarWidth;
-            for (int i = 0; i < (listView.View as GridView).Columns.Count; i++)
+
+            double remainingSpace = listView.ActualWidth - 2 * SystemParameters.VerticalScrollBarWidth;
+            for (int i = 0; i < columns.Count; i++)
                 if (i != autoFillColumnIndex)
-                    remainingSpace -= (listView.View as GridView).Columns[i].ActualWidth;
-            (listView.View as GridView).Columns[autoFillColumnIndex].Width = remainingSpace >= 0 ? remainingSpace : 0;
+                    remainingSpace -= columns[i].ActualWidth;
+            columns[autoFillColumnIndex].Width = remainingSpace >= 0 ? remainingSpace : 0;
         }
     }
 }

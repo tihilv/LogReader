@@ -36,6 +36,11 @@ namespace LogReader
             Changed?.Invoke(this, EventArgs.Empty);
         }
 
+        public bool CanFilterBeApplied()
+        {
+            return Enabled && _definitions.Any(d => d.Enabled);
+        }
+
         public bool FilterLine(string line)
         {
             if (!Enabled)

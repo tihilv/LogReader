@@ -16,3 +16,6 @@
 /packages
 /.vs/LogReader/v14
 /.vs
+/LogReader.Core/LogReader.Core.csproj.user
+/TextLogGenerator/bin
+/TextLogGenerator/obj

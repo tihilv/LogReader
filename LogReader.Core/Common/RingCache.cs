@@ -57,9 +57,9 @@ namespace LogReader
         long GetPositionInCache(long index)
         {
             long indexInCache = index - _firstIndex + _firstPosition;
-            if (indexInCache >= _size)
+            while (indexInCache >= _size)
                 indexInCache -= _size;
-            if (indexInCache < 0)
+            while (indexInCache < 0)
                 indexInCache += _size;
 
             return indexInCache;
